@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Stopwatch App</title>
+    <link rel="stylesheet" href="style/styles.css" />
+  </head>
+  <body>
+    <div class="stopwatch">
+      <div id="display">00:00:00</div>
+      <div class="buttons">
+        <button id="startPause">Start</button>
+        <button id="stop">Stop</button>
+        <button id="reset">Reset</button>
+      </div>
+    </div>
+    <script>
+      document.addEventListener("DOMContentLoaded", () => {
+        let startPauseButton = document.getElementById("startPause");
+        let stopButton = document.getElementById("stop");
+        let resetButton = document.getElementById("reset");
+        let display = document.getElementById("display");
+
+        let startTime;
+        let updatedTime;
+        let difference = 0;
+        let tInterval;
+        let running = false;
+        let stopped = false;
+
+        startPauseButton.addEventListener("click", () => {
+          if (!running) {
+            startTime = new Date().getTime() - difference;
+            tInterval = setInterval(updateTime, 1);
+            running = true;
+            startPauseButton.innerHTML = "Pause";
+          } else {
+            clearInterval(tInterval);
+            difference = new Date().getTime() - startTime;
+            running = false;
+            startPauseButton.innerHTML = "Start";
+          }
+        });
+
+        stopButton.addEventListener("click", () => {
+          clearInterval(tInterval);
+          stopped = true;
+          running = false;
+          startPauseButton.innerHTML = "Start";
+          difference = 0;
+          updateTime();
+        });
+
+        resetButton.addEventListener("click", () => {
+          clearInterval(tInterval);
+          running = false;
+          stopped = false;
+          startPauseButton.innerHTML = "Start";
+          difference = 0;
+          display.innerHTML = "00:00:00";
+        });
+
+        function updateTime() {
+          updatedTime = new Date().getTime() - startTime;
+          let hours = Math.floor(
+            (updatedTime % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+          );
+          let minutes = Math.floor(
+            (updatedTime % (1000 * 60 * 60)) / (1000 * 60)
+          );
+          let seconds = Math.floor((updatedTime % (1000 * 60)) / 1000);
+          display.innerHTML =
+            (hours < 10 ? "0" + hours : hours) +
+            ":" +
+            (minutes < 10 ? "0" + minutes : minutes) +
+            ":" +
+            (seconds < 10 ? "0" + seconds : seconds);
+        }
+      });
+    </script>
+  </body>
+</html>
